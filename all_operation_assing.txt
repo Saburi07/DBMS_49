@@ -1,0 +1,221 @@
+mysql> use emp;
+Database changed
+mysql> select * from info;
++-----+----------+---------+
+| eid | ename    | esal    |
++-----+----------+---------+
+|   1 | om       |  438.23 |
+|   2 | sai      | 23474.3 |
+|   3 | ram      | 7583.23 |
+|   4 | sita     |     354 |
+|   5 | abhi     | 36473.2 |
+|   6 | pari     |    6345 |
+|   7 | rutuja   |     845 |
+|   8 | payal    | 352.34  |
+|   9 | kritika  |    1294 |
++-----+----------+---------+
+7 rows in set (0.00 sec)
+
+mysql> insert into info values(10,'yash',2394);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> delete from info where esal=3647.2;
+Query OK, 1 row affected (0.01 sec)
+
+mysql> update info set esal=1123.44 where ename='om';
+Query OK, 1 row affected (0.01 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> select * from info;
++-----+----------+---------+
+| eid | ename    | esal    |
++-----+----------+---------+
+|   1 | om       |  1123.44|
+|   2 | sai      | 23474.3 |
+|   3 | ram      | 7583.23 |
+|   4 | sita     |     354 |
+|   5 | abhi     | 36473.2 |
+|   6 | pari     |    6345 |
+|   7 | rutuja   |     845 |
+|   8 | payal    | 352.34  |
+|   9 | kritika  |    1294 |
+|  10 | yash     |    2394 |
++-----+----------+---------+
+7 rows in set (0.00 sec)
+
+mysql> select count(eid) from info;
++------------+
+| count(eid) |
++------------+
+|          10|
++------------+
+1 row in set (0.01 sec)
+
+mysql> select count(*) from info;
++----------+
+| count(*) |
++----------+
+|        10 |
++----------+
+1 row in set (0.00 sec)
+
+
+mysql> select avg(eid) from info;
++----------+
+| avg(eid) |
++----------+
+|   5      |
++----------+
+1 row in set (0.00 sec)
+
+mysql> select min(esal) from info;
++-----------+
+| min(esal) |
++-----------+
+|     354   |
++-----------+
+1 row in set (0.00 sec)
+
+mysql> select max(esal) from info;
++-----------+
+| max(esal) |
++-----------+
+|   23474.3 |
++-----------+
+1 row in set (0.00 sec)
+
+mysql> select ename from info where esal=(select min(esal) from info);
++--------+
+| ename  |
++--------+
+| sita   |
++--------+
+1 row in set (0.00 sec)
+
+mysql> select * from info;
++-----+----------+---------+
+| eid | ename    | esal    |
++-----+----------+---------+
+|   1 | om       |  1123.44|
+|   2 | sai      | 23474.3 |
+|   3 | ram      | 7583.23 |
+|   4 | sita     |     354 |
+|   5 | abhi     | 36473.2 |
+|   6 | pari     |    6345 |
+|   7 | rutuja   |     845 |
+|   8 | payal    | 352.34  |
+|   9 | kritika  |    1294 |
+|  10 | yash     |    2394 |
++-----+----------+---------+
+10 rows in set (0.00 sec)
+
+mysql> select * from dinfo;
++------+------+-------+
+| eid  | dno  | dname |
++------+------+-------+
+|    1 |   10 | comp  |
+|    3 |   11 | it    |
+|    4 |   12 | ece   |
+|    2 |   15 | civil |
+|    6 |   16 | comp  |
+|    8 |   17 | civil |
+|    9 |   18 | comp  |
+|   11 |   22 | ece   |
+|   15 |   42 | it    |
+|   16 |   43 | comp  |
++------+------+-------+
+10 rows in set (0.00 sec)
+
+mysql> select dinfo.dname,info.ename from dinfo inner join info on info.eid=dinfo.eid;
++-------+----------+
+| dname | ename    |
++-------+----------+
+| comp  | om       |
+| it    | ram      |
+| ece   | sita     |
+| civil | payal    |
+| comp  | kritika  |
+| civil | payal    |
+| comp  | kritika  |
++-------+----------+
+7 rows in set (0.00 sec)
+
+mysql> select dinfo.dname,info.ename from dinfo left join info on info.eid=dinfo.eid;
++-------+----------+
+| dname | ename    |
++-------+----------+
+| comp  | om       |
+| it    | ram      |
+| ece   | sita     |
+| civil | payal    |
+| comp  | kritika  |
+| civil | payal    |
+| comp  | kritika  |
+| ece   | NULL     |
+| it    | NULL     |
+| comp  | NULL     |
++-------+----------+
+10 rows in set (0.00 sec)
+
+mysql> select dinfo.dname,info.ename from dinfo right join info on info.eid=dinfo.eid;
++-------+----------+
+| dname | ename    |
++-------+----------+
+| comp  | om       |
+| civil | payal    |
+| it    | ram      |
+| ece   | sita     |
+| NULL  | abhi     |
+| comp  | kritiks  |
+| NULL  | rutuja   |
+| civil | payal    |
+| comp  | kritika  |
+| NULL  | yash     |
++-------+----------+
+10 rows in set (0.00 sec)
+
+mysql> create view esal as select * from info where esal<=1000;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> select * from esal;
++-----+---------+--------+
+| eid | ename   | esal   |
++-----+---------+--------+
+|   1 | om      | 1123.44|
+|   4 | sita    |    354 |
+|   7 | rutuja  |    845 |
++-----+---------+--------+
+3 rows in set (0.00 sec)
+
+Delimiter //
+create function add_status(s int)
+returns varchar(10) deterministic
+begin
+declare sta varchar(10);
+if s<=1000 then 
+set sta='low';
+elseif(s>1000 and s<3000) then
+set sta='medium';
+else
+set sta='high';
+end if;
+return(sta);
+end //
+Delimiter ;
+
+mysql> select ename,add_status(esal) from info;
++----------+------------------+
+| ename    | add_status(esal) |
++----------+------------------+
+| om       | medium           |
+| sai      | high             |
+| ram      | high             |
+| sita     | low              |
+| abhi     | high             |
+| pari     | high             |
+| rutuja   | low              |
+| payal    | low              |
+| kritika  | medium           |
+| yash     | medium            |
++----------+------------------+
+10 rows in set (0.00 sec)
